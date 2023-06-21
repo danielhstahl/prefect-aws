@@ -1,8 +1,9 @@
 """SNS Block Module"""
-from prefect_aws import AwsCredentials
 import boto3
 from prefect.blocks.core import Block
 from pydantic import Field
+
+from prefect_aws import AwsCredentials
 
 
 class SNS(Block):
@@ -24,7 +25,7 @@ class SNS(Block):
     _block_type_name = "SNS"
     _logo_url = "https://raw.githubusercontent.com/danielhstahl/prefect-sns/main/docs/img/aws-sns-simple-notification-service.svg"  # noqa
     _documentation_url = (
-        "https://danielhstahl.github.io/prefect-sns/blocks_catalog/"  # noqa
+        "https://prefecthq.github.io/prefect-aws/sns/#prefect_aws.sns.SNS"  # noqa
     )
 
     sns_arn: str
