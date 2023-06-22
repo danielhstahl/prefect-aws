@@ -1,25 +1,22 @@
-import pytest
-import boto3
 from moto import mock_sns
+from moto.sns import sns_backends
 
 from prefect_aws.sns import SNS
 
 
-@pytest.fixture
-def sns_mock():
-    """Mock connection to AWS SNS with boto3 client."""
-
+# @mock_sns
+def test_sns_publishes(aws_credentials):
     with mock_sns():
-        yield boto3.client(
-            service_name="sns",
-            region_name="us-east-1",
-            aws_access_key_id="testing",
-            aws_secret_access_key="testing",
-            aws_session_token="testing",
+        mock_topic = (
+            aws_credentials.get_boto3_session()
+            .client("sns", region_name="us-east-1")
+            .create_topic(Name="mock-topic")
         )
-
-
-def test_task_publishes(sns_mock, aws_credentials):
-    task = SNS(aws_credentials=aws_credentials, sns_arn="some_test_arn")
-    task.publish("mysubject", "mymessage")
-    assert True
+        topic_arn = mock_topic.get("TopicArn")
+        print(aws_credentials.region_name)
+        task = SNS(aws_credentials=aws_credentials, sns_arn=topic_arn)
+        task.publish("mysubject", "mymessage")
+        sns_backend = sns_backends["123456789012"]["us-east-1"]
+        all_send_notifications = sns_backend.topics[topic_arn].sent_notifications
+        assert all_send_notifications[0][1] == "mymessage"
+        assert all_send_notifications[0][2] == "mysubject"
