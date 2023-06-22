@@ -13,6 +13,7 @@ def test_sns_publishes(aws_credentials):
             .create_topic(Name="mock-topic")
         )
         topic_arn = mock_topic.get("TopicArn")
+        print(aws_credentials.region_name)
         task = SNS(aws_credentials=aws_credentials, sns_arn=topic_arn)
         task.publish("mysubject", "mymessage")
         sns_backend = sns_backends["123456789012"]["us-east-1"]
