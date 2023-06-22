@@ -9,7 +9,7 @@ def test_sns_publishes(aws_credentials):
     with mock_sns():
         mock_topic = (
             aws_credentials.get_boto3_session()
-            .client("sns")
+            .client("sns", region_name="us-east-1")
             .create_topic(Name="mock-topic")
         )
         topic_arn = mock_topic.get("TopicArn")

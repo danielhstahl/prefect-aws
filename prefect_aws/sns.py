@@ -38,7 +38,9 @@ class SNS(Block):
         """
         Get SNS client from credentials
         """
-        return self.credentials.get_client("sns")
+        return self.credentials.get_boto3_session().client(
+            "sns", region_name=self.credentials.region_name
+        )
 
     def publish(self, subject: str, message: str):
         """
